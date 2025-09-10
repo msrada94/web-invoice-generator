@@ -1,0 +1,25 @@
+### Submit invoice
+POST http://localhost:8080/submit
+Content-Type: application/x-www-form-urlencoded
+
+contactName=John Doe&
+clientCompany=Acme Corp&
+address=123 Main St, London&
+phone=+44 1234567890&
+email=john.doe@example.com&
+invoiceNumber=101&
+invoiceDate=2025-09-10&
+dueDate=2025-09-30&
+startDate=2025-09-01&
+endDate=2025-09-30&
+hourlyRate=50&
+
+projects[0].name=Project Alpha&
+projects[0].description=Backend development&
+projects[0].hours=25&
+
+projects[1].name=Project Beta&
+projects[1].description=Frontend development&
+projects[1].hours=30
+
+###
