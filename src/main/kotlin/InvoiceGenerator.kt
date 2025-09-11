@@ -37,7 +37,6 @@ object InvoiceGenerator {
                 val helveticaBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
 
                 Document(pdf, PageSize.A4).use { document ->
-                    // Ejemplo: pasar la fuente a las funciones
                     addTitles(document, helveticaBold)
                     addContactInfo(document)
                     addInvoiceInfo(document, invoiceData, helveticaBold)
@@ -57,7 +56,6 @@ object InvoiceGenerator {
                 val helveticaBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
 
                 Document(pdf, PageSize.A4).use { document ->
-                    // Ejemplo: pasar la fuente a las funciones
                     addTitles(document, helveticaBold)
                     addContactInfo(document)
                     addInvoiceInfo(document, invoiceData, helveticaBold)
@@ -169,7 +167,7 @@ object InvoiceGenerator {
         table.setWidth(UnitValue.createPercentValue(100f))
         table.setBold().setTextAlignment(RIGHT)
 
-        table.addCell(Cell()) // empty
+        table.addCell(Cell())
         table.addCell(Cell().add(Paragraph("Balance Due:").setFontSize(13f)))
         table.addCell(Cell().add(Paragraph("£$totalDue").setFontSize(13f)))
 

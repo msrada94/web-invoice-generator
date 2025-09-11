@@ -11,7 +11,7 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            module()
+            module(validUser = "validUser", validPass = "validPass")
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)

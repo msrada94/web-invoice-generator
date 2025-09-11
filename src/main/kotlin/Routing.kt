@@ -19,6 +19,7 @@ import io.ktor.server.sessions.set
 import kotlinx.html.FormMethod
 import kotlinx.html.body
 import kotlinx.html.form
+import kotlinx.html.h2
 import kotlinx.html.passwordInput
 import kotlinx.html.submitInput
 import kotlinx.html.textInput
@@ -32,9 +33,10 @@ fun Application.configureRouting() {
             call.respondHtml {
                 body {
                     form(action = "/login", method = FormMethod.post) {
-                        textInput { name = "username"; placeholder = "Usuario" }
-                        passwordInput { name = "password"; placeholder = "Contraseña" }
-                        submitInput { value = "Iniciar sesión" }
+                        h2 { +"Invoice Generator" }
+                        textInput { name = "username"; placeholder = "Username" }
+                        passwordInput { name = "password"; placeholder = "Password" }
+                        submitInput { value = "Login" }
                     }
                 }
             }

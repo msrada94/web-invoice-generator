@@ -11,7 +11,7 @@ import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import kotlinx.serialization.Serializable
 
-fun Application.configureSecurity() {
+fun Application.configureSecurity(validUser: String, validPass: String) {
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
@@ -22,7 +22,7 @@ fun Application.configureSecurity() {
             userParamName = "username"
             passwordParamName = "password"
             validate { credentials ->
-                if (credentials.name == "alice" && credentials.password == "0210") {
+                if (credentials.name == validUser && credentials.password == validPass) {
                     UserIdPrincipal(credentials.name)
                 } else null
             }

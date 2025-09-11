@@ -30,7 +30,7 @@
             row.innerHTML = `
                 <td><input type="text" name="projects[${rowCount-1}].name" placeholder="AB1234"></td>
                 <td><input style="width: 300px;" type="text" name="projects[${rowCount-1}].description" placeholder="Description"></td>
-                <td><input style="width: 50px;" type="number" step="0.01" min="0" name="projects[${rowCount-1}].hours" placeholder="10.5"></td>
+                <td><input style="width: 50px;" type="number" step="0.1" min="0" name="projects[${rowCount-1}].hours" placeholder="10.5"></td>
             `;
         }
     </script>
@@ -98,7 +98,7 @@
             </td>
             <td>
                 <label for="hourlyRate">Hourly Rate</label>
-                <input type="number" step="1" min="1" id="hourlyRate" name="hourlyRate" placeholder="45">
+                <input type="number" step="5" min="0" id="hourlyRate" name="hourlyRate" placeholder="45">
             </td>
         </tr>
     </table>
