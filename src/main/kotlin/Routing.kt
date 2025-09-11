@@ -14,6 +14,8 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import kotlinx.html.FormMethod
 import kotlinx.html.body
 import kotlinx.html.form
@@ -41,12 +43,12 @@ fun Application.configureRouting() {
         authenticate("formAuth") {
             post("/login") {
                 val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("¡Hola ${principal.name}, has iniciado sesión correctamente!")
-//                call.respondRedirect("form")
+                call.sessions.set(MySession(principal.name))
+                call.respondRedirect("form")
             }
         }
 
-        authenticate("formAuth") {
+        authenticate("sessionAuth") {
             get("/form") {
                 call.respondText(this::class.java.classLoader.getResource("static/index.html")!!.readText(), Html)
             }
