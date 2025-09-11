@@ -31,7 +31,8 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.5")
     implementation("com.itextpdf:itext7-core:7.2.5")
     testImplementation("io.ktor:ktor-server-test-host")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
 }
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
@@ -39,5 +40,9 @@ tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJ
     manifest {
         attributes["Main-Class"] = "com.alicefield.ApplicationKt"
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 

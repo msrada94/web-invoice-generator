@@ -18,12 +18,13 @@ import com.itextpdf.layout.element.Table
 import com.itextpdf.layout.properties.TextAlignment
 import com.itextpdf.layout.properties.UnitValue
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine
+import com.itextpdf.layout.element.Text
 import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 
 object InvoiceGenerator {
 
-    const val ALICE_INFO = "Senior Medical Editor\n101 Heron Rd, Northstowe, " +
+    const val ALICE_INFO = "101 Heron Rd, Northstowe, " +
             "Cambridge CB24 1AS\n alicefield91@gmail.com\n 07961533126\n\n"
 
     fun generateInvoiceByteArray(invoiceData: InvoiceData): ByteArray {
@@ -45,6 +46,24 @@ object InvoiceGenerator {
         }
 
         return outputStream.toByteArray()
+    }
+
+    fun generateInvoice(invoiceData: InvoiceData) {
+
+        PdfWriter("${invoiceData.invoiceInfo.invoiceID}.pdf").use { writer ->
+            PdfDocument(writer).use { pdf ->
+                val helveticaBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
+
+                Document(pdf, PageSize.A4).use { document ->
+                    // Ejemplo: pasar la fuente a las funciones
+                    addTitles(document, helveticaBold)
+                    addContactInfo(document)
+                    addInvoiceInfo(document, invoiceData, helveticaBold)
+                    addProjects(document, invoiceData.projects, helveticaBold)
+                    addBalanceAndPayment(document, invoiceData.projects.sumOf { it.total })
+                }
+            }
+        }
     }
 
 
@@ -83,12 +102,12 @@ object InvoiceGenerator {
     private fun getTitlesTable(font: PdfFont): Table {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
-
-        val aliceTitle = Paragraph("Alice Field\n").setFontSize(20f).setFont(font).setBold()
+        val aliceText = Text("Alice Field\n").setFontSize(20f).setFont(font).setBold()
+        val jobTitle = Text("Senior Medical Editor").setFontSize(12f).setFont(font)
         val invoiceTitle = Paragraph("INVOICE").setFont(font).setBold().setFontSize(19f)
             .setTextAlignment(TextAlignment.RIGHT)
 
-        table.addCell(Cell().add(aliceTitle))
+        table.addCell(Cell().add(Paragraph().add(aliceText).add(jobTitle)))
         table.addCell(Cell().add(invoiceTitle))
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
