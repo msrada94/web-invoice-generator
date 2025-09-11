@@ -42,15 +42,13 @@ fun Application.configureRouting() {
             post("/login") {
                 val principal = call.principal<UserIdPrincipal>()!!
                 call.respondText("¡Hola ${principal.name}, has iniciado sesión correctamente!")
+//                call.respondRedirect("form")
             }
         }
 
         authenticate("formAuth") {
             get("/form") {
-                call.respondText(
-                    this::class.java.classLoader.getResource("static/index.html")!!.readText(),
-                    ContentType.Text.Html
-                )
+                call.respondText(this::class.java.classLoader.getResource("static/index.html")!!.readText(), Html)
             }
 
             post("/submit") {
