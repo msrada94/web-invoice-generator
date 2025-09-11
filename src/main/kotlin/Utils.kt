@@ -41,5 +41,5 @@ fun InvoiceSummaryData.toInvoiceData(): InvoiceData {
 }
 
 private fun formatInvoiceNumber(n: Int): String {
-    return "INV" + String.format("%04d", n)
+    return "INV" + String.format("%02d", n)
 }

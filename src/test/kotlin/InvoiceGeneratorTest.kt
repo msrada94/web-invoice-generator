@@ -11,7 +11,7 @@ class InvoiceGeneratorTest {
     fun generateInvoiceTest() {
         val invoiceData = InvoiceData(
             invoiceInfo = InvoiceInfo(
-                invoiceID = "INV00001",
+                invoiceID = "INV001",
                 invoiceDate = LocalDate.of(2023, 11, 11),
                 dueDate = LocalDate.of(2023, 12, 12),
                 hourlyRate = 45,

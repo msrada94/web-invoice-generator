@@ -19,6 +19,8 @@ import com.itextpdf.layout.properties.TextAlignment
 import com.itextpdf.layout.properties.UnitValue
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine
 import com.itextpdf.layout.element.Text
+import com.itextpdf.layout.properties.TextAlignment.LEFT
+import com.itextpdf.layout.properties.TextAlignment.RIGHT
 import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 
@@ -105,7 +107,7 @@ object InvoiceGenerator {
         val aliceText = Text("Alice Field\n").setFontSize(20f).setFont(font).setBold()
         val jobTitle = Text("Senior Medical Editor").setFontSize(12f).setFont(font)
         val invoiceTitle = Paragraph("INVOICE").setFont(font).setBold().setFontSize(19f)
-            .setTextAlignment(TextAlignment.RIGHT)
+            .setTextAlignment(RIGHT)
 
         table.addCell(Cell().add(Paragraph().add(aliceText).add(jobTitle)))
         table.addCell(Cell().add(invoiceTitle))
@@ -114,14 +116,23 @@ object InvoiceGenerator {
     }
 
     private fun getInvoiceInfoTable(billingInfo: BillingInfo, invoiceInfo: InvoiceInfo): Table {
-        val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
+        val table = Table(UnitValue.createPercentArray(floatArrayOf(1.5f, 1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
 
         table.addCell(Cell().add(Paragraph("BILL TO").setBold().setFontColor(BLUE)))
         table.addCell(Cell())
+        table.addCell(Cell())
 
         table.addCell(Cell().add(Paragraph(getBillingInfo(billingInfo))))
-        table.addCell(Cell().add(Paragraph(getInvoiceInfo(invoiceInfo)).setTextAlignment(TextAlignment.RIGHT)))
+        table.addCell(
+            Cell().add(
+                Paragraph(getInvoiceInfoKeys()).setTextAlignment(RIGHT).setBold().setFontSize(13f)
+            )
+        )
+        table.addCell(
+            Cell().add(getInvoiceInfoValues(invoiceInfo).setTextAlignment(LEFT))
+                .setFontSize(13f).setFontColor(DeviceRgb(100, 100, 100))
+        )
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
@@ -136,7 +147,7 @@ object InvoiceGenerator {
         table.addCell(Cell().add(Paragraph("Description").setBold()))
         table.addCell(Cell().add(Paragraph("Hours").setBold().setTextAlignment(TextAlignment.CENTER)))
         table.addCell(Cell().add(Paragraph("Hourly rate").setBold().setTextAlignment(TextAlignment.CENTER)))
-        table.addCell(Cell().add(Paragraph("Total").setBold().setTextAlignment(TextAlignment.RIGHT)))
+        table.addCell(Cell().add(Paragraph("Total").setBold().setTextAlignment(RIGHT)))
 
         // Project rows
         projects.forEachIndexed { index, project ->
@@ -145,7 +156,7 @@ object InvoiceGenerator {
             table.addCell(Cell().add(projectCell(project.description, TextAlignment.JUSTIFIED, color)))
             table.addCell(Cell().add(projectCell(project.hours.toString(), TextAlignment.CENTER, color)))
             table.addCell(Cell().add(projectCell(project.hourlyRateFormatted, TextAlignment.CENTER, color)))
-            table.addCell(Cell().add(projectCell(project.formattedTotal, TextAlignment.RIGHT, color)))
+            table.addCell(Cell().add(projectCell(project.formattedTotal, RIGHT, color)))
         }
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
@@ -155,10 +166,10 @@ object InvoiceGenerator {
     private fun getBalanceDueTable(totalDue: BigDecimal): Table {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(4f, 1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
-        table.setBold().setTextAlignment(TextAlignment.RIGHT)
+        table.setBold().setTextAlignment(RIGHT)
 
         table.addCell(Cell()) // empty
-        table.addCell(Cell().add(Paragraph("Balance Due: ")))
+        table.addCell(Cell().add(Paragraph("Balance Due: ").setFontSize(13f)))
         table.addCell(Cell().add(Paragraph("£$totalDue").setBackgroundColor(GRAY)))
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
@@ -169,11 +180,12 @@ object InvoiceGenerator {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
 
-        table.addCell(Cell().add(Paragraph("Payment details:").setBold().setTextAlignment(TextAlignment.LEFT)))
-        table.addCell(Cell().add(Paragraph("Invoice to be paid in GBP").setTextAlignment(TextAlignment.RIGHT).setFontSize(10f)))
+        table.addCell(Cell().add(Paragraph("Payment details:").setBold().setTextAlignment(LEFT).setFontSize(14f)))
+        table.addCell(
+            Cell().add(Paragraph("Invoice to be paid in GBP").setTextAlignment(RIGHT).setFontSize(10f))
+        )
 
-        // Row spanning two columns
-        table.addCell(Cell(1, 2).add(Paragraph("Bank: Natwest\nAccount number: 89801792\nSort code: 60-04-23")))
+        table.addCell(Cell(1, 2).add(bankingParagraph))
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
@@ -187,14 +199,34 @@ object InvoiceGenerator {
             .setFontColor(DeviceRgb(80, 80, 80))
     }
 
-    private fun getInvoiceInfo(invoiceInfo: InvoiceInfo): String = "Invoice No: #${invoiceInfo.invoiceID}\n" +
-            "Date range: ${invoiceInfo.startDateFormatted} to ${invoiceInfo.endDateFormatted}\n" +
-            "Invoice Date: ${invoiceInfo.invoiceDateFormatted}\n" +
-            "Due Date: ${invoiceInfo.dueDateFormatted}"
+
+    private fun getInvoiceInfoValues(invoiceInfo: InvoiceInfo): Paragraph {
+        return Paragraph()
+            .add(Text("#${invoiceInfo.invoiceID}\n"))
+            .add(Text("${invoiceInfo.startDateFormatted} "))
+            .add(Text("to").setFontColor(BLACK))
+            .add(Text(" ${invoiceInfo.endDateFormatted}\n"))
+            .add(Text("${invoiceInfo.invoiceDateFormatted}\n"))
+            .add(Text("${invoiceInfo.dueDateFormatted}"))
+    }
+
+    private fun getInvoiceInfoKeys(): String = "Invoice ID:\n" +
+            "Date range:\n" +
+            "Invoice Date:\n" +
+            "Due Date:"
 
     private fun getBillingInfo(billingInfo: BillingInfo): String = "${billingInfo.contactName}\n" +
             "${billingInfo.clientCompanyName}\n" +
             "${billingInfo.address}\n" +
             "${billingInfo.email}\n" +
             "${billingInfo.phone}"
+
+    private val bankingParagraph = Paragraph()
+        .add(Text("Bank: ").setBold())
+        .add(Text("Natwest\n").setFontColor(DeviceRgb(100, 100, 100)))
+        .add(Text("Account number: ").setBold())
+        .add(Text("89801792\n").setFontColor(DeviceRgb(100, 100, 100)))
+        .add(Text("Sort code: ").setBold())
+        .add(Text("60-04-23").setFontColor(DeviceRgb(100, 100, 100)))
+        .setFontSize(12f)
 }
