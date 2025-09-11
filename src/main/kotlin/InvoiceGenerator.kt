@@ -91,6 +91,7 @@ object InvoiceGenerator {
 
     private fun addBalanceAndPayment(document: Document, totalDueAmount: BigDecimal) {
         document.add(getBalanceDueTable(totalDueAmount))
+        addSeparator(document, repeat = 4, color = WHITE)
         document.add(getPaymentTable())
     }
 
@@ -169,8 +170,8 @@ object InvoiceGenerator {
         table.setBold().setTextAlignment(RIGHT)
 
         table.addCell(Cell()) // empty
-        table.addCell(Cell().add(Paragraph("Balance Due: ").setFontSize(13f)))
-        table.addCell(Cell().add(Paragraph("£$totalDue").setBackgroundColor(GRAY)))
+        table.addCell(Cell().add(Paragraph("Balance Due:").setFontSize(13f)))
+        table.addCell(Cell().add(Paragraph("£$totalDue").setFontSize(13f)))
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
