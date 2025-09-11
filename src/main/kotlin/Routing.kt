@@ -3,20 +3,20 @@ package com.alicefield
 import com.alicefield.InvoiceGenerator.generateInvoiceByteArray
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
+import io.ktor.http.ContentType.Text.Html
 import io.ktor.http.HttpHeaders
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.io.File
 
 fun Application.configureRouting() {
     routing {
         staticResources("/static", "static")
 
         get("/") {
-            call.respondFile(File("src/main/resources/static/index.html"))
+            call.respondText(this::class.java.classLoader.getResource("static/index.html")!!.readText(), Html)
         }
         post("/submit") {
             val params = call.receiveParameters()
@@ -62,5 +62,3 @@ fun Application.configureRouting() {
         }
     }
 }
-
-
