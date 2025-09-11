@@ -10,7 +10,7 @@ group = "com.alicefield"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass = "com.alicefield.ApplicationKt"
 }
 
 dependencies {
@@ -30,3 +30,11 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.5")
     implementation("com.itextpdf:itext7-core:7.2.5")
 }
+
+tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    archiveClassifier.set("all") // optional, usually default
+    manifest {
+        attributes["Main-Class"] = "com.alicefield.ApplicationKt" // adjust as needed
+    }
+}
+
