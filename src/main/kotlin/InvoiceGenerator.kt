@@ -1,11 +1,8 @@
 package com.alicefield
 
-import com.itextpdf.io.font.constants.StandardFonts
 import com.itextpdf.kernel.colors.Color
 import com.itextpdf.kernel.colors.ColorConstants.*
 import com.itextpdf.kernel.colors.DeviceRgb
-import com.itextpdf.kernel.font.PdfFont
-import com.itextpdf.kernel.font.PdfFontFactory
 import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
@@ -34,13 +31,12 @@ object InvoiceGenerator {
 
         PdfWriter(outputStream).use { writer ->
             PdfDocument(writer).use { pdf ->
-                val helveticaBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
 
                 Document(pdf, PageSize.A4).use { document ->
-                    addTitles(document, helveticaBold)
+                    addTitles(document)
                     addContactInfo(document)
-                    addInvoiceInfo(document, invoiceData, helveticaBold)
-                    addProjects(document, invoiceData.projects, helveticaBold)
+                    addInvoiceInfo(document, invoiceData)
+                    addProjects(document, invoiceData.projects)
                     addBalanceAndPayment(document, invoiceData.projects.sumOf { it.total })
                 }
             }
@@ -53,13 +49,11 @@ object InvoiceGenerator {
 
         PdfWriter("${invoiceData.invoiceInfo.invoiceID}.pdf").use { writer ->
             PdfDocument(writer).use { pdf ->
-                val helveticaBold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
-
                 Document(pdf, PageSize.A4).use { document ->
-                    addTitles(document, helveticaBold)
+                    addTitles(document)
                     addContactInfo(document)
-                    addInvoiceInfo(document, invoiceData, helveticaBold)
-                    addProjects(document, invoiceData.projects, helveticaBold)
+                    addInvoiceInfo(document, invoiceData)
+                    addProjects(document, invoiceData.projects)
                     addBalanceAndPayment(document, invoiceData.projects.sumOf { it.total })
                 }
             }
@@ -68,8 +62,8 @@ object InvoiceGenerator {
 
 
     // --- Aux functions ---
-    private fun addTitles(document: Document, font: PdfFont) {
-        document.add(getTitlesTable(font))
+    private fun addTitles(document: Document) {
+        document.add(getTitlesTable())
     }
 
     private fun addContactInfo(document: Document) {
@@ -77,12 +71,12 @@ object InvoiceGenerator {
         addSeparator(document)
     }
 
-    private fun addInvoiceInfo(document: Document, invoiceData: InvoiceData, helveticaBold: PdfFont) {
+    private fun addInvoiceInfo(document: Document, invoiceData: InvoiceData) {
         document.add(getInvoiceInfoTable(invoiceData.billingInfo, invoiceData.invoiceInfo))
         addSeparator(document)
     }
 
-    private fun addProjects(document: Document, projects: List<Project>, helveticaBold: PdfFont) {
+    private fun addProjects(document: Document, projects: List<Project>) {
         document.add(getProjectsTable(projects))
         addSeparator(document, repeat = 2, color = WHITE)
     }
@@ -100,12 +94,12 @@ object InvoiceGenerator {
     }
 
     // --- Table creators (nuevos objetos cada vez) ---
-    private fun getTitlesTable(font: PdfFont): Table {
+    private fun getTitlesTable(): Table {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
-        val aliceText = Text("Alice Field\n").setFontSize(20f).setFont(font).setBold()
-        val jobTitle = Text("Senior Medical Editor").setFontSize(12f).setFont(font)
-        val invoiceTitle = Paragraph("INVOICE").setFont(font).setBold().setFontSize(19f)
+        val aliceText = Text("Alice Field\n").setFontSize(20f).setBold()
+        val jobTitle = Text("Senior Medical Editor").setFontSize(12f).setBold()
+        val invoiceTitle = Paragraph("INVOICE").setBold().setFontSize(20f)
             .setTextAlignment(RIGHT)
 
         table.addCell(Cell().add(Paragraph().add(aliceText).add(jobTitle)))
@@ -118,19 +112,18 @@ object InvoiceGenerator {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1.5f, 1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
 
-        table.addCell(Cell().add(Paragraph("BILL TO").setBold().setFontColor(BLUE)))
+        table.addCell(Cell().add(Paragraph("BILL TO").setBold()))
         table.addCell(Cell())
         table.addCell(Cell())
 
         table.addCell(Cell().add(Paragraph(getBillingInfo(billingInfo))))
         table.addCell(
             Cell().add(
-                Paragraph(getInvoiceInfoKeys()).setTextAlignment(RIGHT).setBold().setFontSize(13f)
+                Paragraph(getInvoiceInfoKeys()).setTextAlignment(RIGHT).setBold()
             )
         )
         table.addCell(
             Cell().add(getInvoiceInfoValues(invoiceInfo).setTextAlignment(LEFT))
-                .setFontSize(13f).setFontColor(DeviceRgb(100, 100, 100))
         )
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
@@ -168,8 +161,8 @@ object InvoiceGenerator {
         table.setBold().setTextAlignment(RIGHT)
 
         table.addCell(Cell())
-        table.addCell(Cell().add(Paragraph("Balance Due:").setFontSize(13f)))
-        table.addCell(Cell().add(Paragraph("£$totalDue").setFontSize(13f)))
+        table.addCell(Cell().add(Paragraph("Balance Due:")))
+        table.addCell(Cell().add(Paragraph("£$totalDue")))
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
@@ -179,9 +172,9 @@ object InvoiceGenerator {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
 
-        table.addCell(Cell().add(Paragraph("Payment details:").setBold().setTextAlignment(LEFT).setFontSize(14f)))
+        table.addCell(Cell().add(Paragraph("Payment details:").setBold().setTextAlignment(LEFT)))
         table.addCell(
-            Cell().add(Paragraph("Invoice to be paid in GBP").setTextAlignment(RIGHT).setFontSize(10f))
+            Cell().add(Paragraph("Invoice to be paid in GBP").setTextAlignment(RIGHT))
         )
 
         table.addCell(Cell(1, 2).add(bankingParagraph))
@@ -193,9 +186,7 @@ object InvoiceGenerator {
     private fun projectCell(text: String, alignment: TextAlignment, backgroundColor: Color): Paragraph {
         return Paragraph(text)
             .setBackgroundColor(backgroundColor)
-            .setFontSize(10f)
             .setTextAlignment(alignment)
-            .setFontColor(DeviceRgb(80, 80, 80))
     }
 
 
@@ -222,10 +213,9 @@ object InvoiceGenerator {
 
     private val bankingParagraph = Paragraph()
         .add(Text("Bank: ").setBold())
-        .add(Text("Natwest\n").setFontColor(DeviceRgb(100, 100, 100)))
+        .add(Text("Natwest\n"))
         .add(Text("Account number: ").setBold())
-        .add(Text("89801792\n").setFontColor(DeviceRgb(100, 100, 100)))
+        .add(Text("89801792\n"))
         .add(Text("Sort code: ").setBold())
-        .add(Text("60-04-23").setFontColor(DeviceRgb(100, 100, 100)))
-        .setFontSize(12f)
+        .add(Text("60-04-23"))
 }
