@@ -16,8 +16,7 @@ import com.itextpdf.layout.properties.TextAlignment
 import com.itextpdf.layout.properties.UnitValue
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine
 import com.itextpdf.layout.element.Text
-import com.itextpdf.layout.properties.TextAlignment.LEFT
-import com.itextpdf.layout.properties.TextAlignment.RIGHT
+import com.itextpdf.layout.properties.TextAlignment.*
 import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 
@@ -93,7 +92,6 @@ object InvoiceGenerator {
         }
     }
 
-    // --- Table creators (nuevos objetos cada vez) ---
     private fun getTitlesTable(): Table {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
@@ -134,27 +132,37 @@ object InvoiceGenerator {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 4f, 1f, 1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
 
-        // Headers
-        table.addCell(Cell().add(Paragraph("Project").setBold()))
-        table.addCell(Cell().add(Paragraph("Description").setBold()))
-        table.addCell(Cell().add(Paragraph("Hours").setBold().setTextAlignment(TextAlignment.CENTER)))
-        table.addCell(Cell().add(Paragraph("Hourly rate").setBold().setTextAlignment(TextAlignment.CENTER)))
-        table.addCell(Cell().add(Paragraph("Total").setBold().setTextAlignment(RIGHT)))
+        table.addCell(headerCell("Project"))
+        table.addCell(headerCell("Description"))
+        table.addCell(headerCell("Hours", CENTER))
+        table.addCell(headerCell("Hourly rate", CENTER))
+        table.addCell(headerCell("Total", RIGHT))
 
-        // Project rows
         projects.forEachIndexed { index, project ->
-            val color = if (index % 2 == 0) DeviceRgb(220, 220, 220) else WHITE
-            table.addCell(Cell().add(projectCell(project.name, TextAlignment.JUSTIFIED, color)))
-            table.addCell(Cell().add(projectCell(project.description, TextAlignment.JUSTIFIED, color)))
-            table.addCell(Cell().add(projectCell(project.hours.toString(), TextAlignment.CENTER, color)))
-            table.addCell(Cell().add(projectCell(project.hourlyRateFormatted, TextAlignment.CENTER, color)))
-            table.addCell(Cell().add(projectCell(project.formattedTotal, RIGHT, color)))
+            val bgColor = if (index % 2 == 0) DeviceRgb(220, 220, 220) else WHITE
+
+            table.addCell(contentCell(project.name, LEFT, bgColor))
+            table.addCell(contentCell(project.description, LEFT, bgColor))
+            table.addCell(contentCell(project.hours.toString(), CENTER, bgColor))
+            table.addCell(contentCell(project.hourlyRateFormatted, CENTER, bgColor))
+            table.addCell(contentCell(project.formattedTotal, RIGHT, bgColor))
         }
 
-        table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
         return table
     }
 
+    private fun headerCell(text: String, alignment: TextAlignment = LEFT): Cell {
+        return Cell()
+            .add(Paragraph(text).setBold().setTextAlignment(alignment))
+            .setBorder(NO_BORDER)
+    }
+
+    private fun contentCell(text: String, alignment: TextAlignment, bgColor: Color): Cell {
+        return Cell()
+            .add(Paragraph(text).setTextAlignment(alignment))
+            .setBackgroundColor(bgColor)
+            .setBorder(NO_BORDER)
+    }
     private fun getBalanceDueTable(totalDue: BigDecimal): Table {
         val table = Table(UnitValue.createPercentArray(floatArrayOf(4f, 1f, 1f)))
         table.setWidth(UnitValue.createPercentValue(100f))
@@ -183,18 +191,11 @@ object InvoiceGenerator {
         return table
     }
 
-    private fun projectCell(text: String, alignment: TextAlignment, backgroundColor: Color): Paragraph {
-        return Paragraph(text)
-            .setBackgroundColor(backgroundColor)
-            .setTextAlignment(alignment)
-    }
-
-
     private fun getInvoiceInfoValues(invoiceInfo: InvoiceInfo): Paragraph {
         return Paragraph()
             .add(Text("#${invoiceInfo.invoiceID}\n"))
             .add(Text("${invoiceInfo.startDateFormatted} "))
-            .add(Text("to").setFontColor(BLACK))
+            .add(Text("to"))
             .add(Text(" ${invoiceInfo.endDateFormatted}\n"))
             .add(Text("${invoiceInfo.invoiceDateFormatted}\n"))
             .add(Text("${invoiceInfo.dueDateFormatted}"))
