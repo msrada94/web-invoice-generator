@@ -4,62 +4,48 @@
     <meta charset="UTF-8">
     <title>Invoice Form</title>
     <style>
-        table.form-table {
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table.form-table td {
-            padding: 8px;
-            vertical-align: top;
-        }
-        table.form-table label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        table.form-table input {
-            width: 180px;
-        }
+        table.form-table { border-collapse: collapse; margin-bottom: 20px; }
+        table.form-table td { padding: 8px; vertical-align: top; }
+        table.form-table label { display: block; font-weight: bold; margin-bottom: 4px; }
+        table.form-table input { width: 180px; }
+        #projectsTable input { width: 100%; }
+        button { padding: 8px 16px; margin-top: 10px; }
     </style>
     <script>
         function addProjectRow() {
             const table = document.getElementById("projectsTable");
-            const rowCount = table.rows.length;
+            const rowCount = table.rows.length - 1; // descontar header
             const row = table.insertRow(-1);
-
             row.innerHTML = `
-                <td><input type="text" name="projects[${rowCount-1}].name" placeholder="AB1234"></td>
-                <td><input style="width: 300px;" type="text" name="projects[${rowCount-1}].description" placeholder="Description"></td>
-                <td><input style="width: 50px;" type="number" step="0.1" min="0" name="projects[${rowCount-1}].hours" placeholder="10.5"></td>
+                <td><input type="text" name="projects[${rowCount}].name" placeholder="AB1234"></td>
+                <td><input type="text" name="projects[${rowCount}].description" placeholder="Description"></td>
+                <td><input type="number" step="0.1" min="0" name="projects[${rowCount}].hours" placeholder="10.5"></td>
             `;
         }
     </script>
 </head>
 <body>
 <h1>Alice Invoice Generator</h1>
-<form action="/submit" method="post">
 
+<form action="/submit" method="post">
     <table class="form-table">
         <tr>
-            <td>
-                <h3>Bill To:</h3>
-            </td>
+            <td><h3>Bill To:</h3></td>
             <td>
                 <label for="contactName">Contact Name</label>
-                <input type="text" id="contactName" name="contactName" placeholder="Jhon Doe">
+                <input type="text" id="contactName" name="contactName" placeholder="Jhon Doe" required>
             </td>
             <td>
                 <label for="clientCompany">Client Company</label>
-                <input type="text" id="clientCompany" name="clientCompany" placeholder="Acme Inc.">
+                <input type="text" id="clientCompany" name="clientCompany" placeholder="Acme Inc." required>
             </td>
             <td>
                 <label for="address">Address</label>
-                <input type="text" id="address" name="address" placeholder="123 Main St">
+                <input type="text" id="address" name="address" placeholder="123 Main St" required>
             </td>
         </tr>
         <tr>
-            <td>
-            </td>
+            <td></td>
             <td>
                 <label for="phone">Phone</label>
                 <input type="text" id="phone" name="phone" placeholder="1234567890">
@@ -70,35 +56,33 @@
             </td>
         </tr>
         <tr>
-            <td>
-                <h3>Invoice info:</h3>
-            </td>
+            <td><h3>Invoice info:</h3></td>
             <td>
                 <label for="invoiceNumber">Invoice Number</label>
-                <input type="number" step="1" min="1" id="invoiceNumber" name="invoiceNumber" placeholder="1">
+                <input type="number" step="1" min="1" id="invoiceNumber" name="invoiceNumber" placeholder="1" required>
             </td>
             <td>
                 <label for="invoiceDate">Invoice Date</label>
-                <input type="date" id="invoiceDate" name="invoiceDate">
+                <input type="date" id="invoiceDate" name="invoiceDate" required>
             </td>
             <td>
                 <label for="dueDate">Due Date</label>
-                <input type="date" id="dueDate" name="dueDate">
+                <input type="date" id="dueDate" name="dueDate" required>
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
                 <label for="startDate">Start Date</label>
-                <input type="date" id="startDate" name="startDate">
+                <input type="date" id="startDate" name="startDate" required>
             </td>
             <td>
                 <label for="endDate">End Date</label>
-                <input type="date" id="endDate" name="endDate">
+                <input type="date" id="endDate" name="endDate" required>
             </td>
             <td>
                 <label for="hourlyRate">Hourly Rate</label>
-                <input type="number" step="5" min="0" id="hourlyRate" name="hourlyRate" placeholder="45">
+                <input type="number" step="5" min="0" id="hourlyRate" name="hourlyRate" placeholder="45" required>
             </td>
         </tr>
     </table>
@@ -107,13 +91,13 @@
     <table border="1" id="projectsTable">
         <tr>
             <th>Project</th>
-            <th style="width: 300px;">Description</th>
+            <th>Description</th>
             <th>Hours</th>
         </tr>
         <tr>
-            <td><input type="text" name="projects[0].name" placeholder="AB1234"></td>
-            <td><input style="width: 300px;" type="text" name="projects[0].description" placeholder="Description"></td>
-            <td><input style="width: 50px;" type="number" step="0.1" min="0" name="projects[0].hours" placeholder="10.5"></td>
+            <td><input type="text" name="projects[0].name" placeholder="AB1234" required></td>
+            <td><input type="text" name="projects[0].description" placeholder="Description" required></td>
+            <td><input type="number" step="0.1" min="0" name="projects[0].hours" placeholder="10.5" required></td>
         </tr>
     </table>
     <button type="button" onclick="addProjectRow()">Add Project</button><br><br>

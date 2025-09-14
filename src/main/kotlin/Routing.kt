@@ -5,12 +5,14 @@ import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.ContentType.Text.Html
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 import io.ktor.server.html.respondHtml
 import io.ktor.server.http.content.*
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -23,8 +25,20 @@ import kotlinx.html.h2
 import kotlinx.html.passwordInput
 import kotlinx.html.submitInput
 import kotlinx.html.textInput
+import kotlinx.html.*
+
 
 fun Application.configureRouting() {
+    install(StatusPages) {
+        exception<Throwable> { call, cause ->
+            println("Error: ${cause.message}")
+            call.respondRedirect("/error?msg=${cause.message}")
+        }
+
+        status(HttpStatusCode.NotFound) { call, status ->
+            call.respondRedirect("/error?msg=Página no encontrada")
+        }
+    }
 
     routing {
         staticResources("/static", "static")
@@ -99,6 +113,24 @@ fun Application.configureRouting() {
                 )
 
                 call.respondBytes(pdfBytes, ContentType.Application.Pdf)
+            }
+
+            get("/error") {
+                val msg = call.request.queryParameters["msg"] ?: "Unknown error"
+                call.respondHtml {
+                    head { title { +"Error" } }
+                    body {
+                        style = "font-family:Arial,sans-serif;text-align:center;margin-top:50px;"
+                        h1 { style = "color:red;"; +"Error" }
+                        h2 { +msg }
+                        form(action = "/form", method = FormMethod.get) {
+                            button(type = ButtonType.submit) {
+                                style = "padding:10px 20px;font-size:16px;"
+                                +"Back to form"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
