@@ -125,11 +125,11 @@ fun Application.configureRouting() {
                         style = "font-family:Arial,sans-serif;text-align:center;margin-top:50px;"
                         h1 { style = "color:red;"; +"Error" }
                         h2 { +msg }
-                        form(action = "/form", method = FormMethod.get) {
-                            button(type = ButtonType.submit) {
-                                style = "padding:10px 20px;font-size:16px;"
-                                +"Back to form"
-                            }
+                        button {
+                            type = ButtonType.button
+                            style = "padding:10px 20px;font-size:16px;"
+                            attributes["onclick"] = "window.history.back();"
+                            +"Back to form"
                         }
                     }
                 }

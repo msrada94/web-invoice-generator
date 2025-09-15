@@ -44,6 +44,11 @@ data class InvoiceInfo(
 ){
     private val formatter = DateTimeFormatter.ofPattern("dd-MMM-yy", ENGLISH)
 
+    init {
+        require(startDate <= endDate) { "Start date must be before or equal to End date" }
+        require(invoiceDate <= dueDate) { "Invoice date must be before or equal to Due date" }
+    }
+
     val invoiceDateFormatted: String
         get() = invoiceDate.format(formatter)
     val dueDateFormatted: String
