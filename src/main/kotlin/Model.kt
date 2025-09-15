@@ -5,7 +5,7 @@ import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale.ENGLISH
-import kotlin.math.round
+import kotlin.math.ceil
 
 data class Project(
     val name: String,
@@ -13,8 +13,9 @@ data class Project(
     private val rawHours: Float,
     private val hourlyRate: Int = 45
 ) {
-    val hours: Float = (round(rawHours * 10) / 10.0).toFloat()
+    private val roundedHours: Float = (ceil(rawHours * 4) / 4.0).toFloat()
 
+    val hours: String = String.format("%.2f", roundedHours)
     val total: BigDecimal
         get() = BigDecimal(hours.toDouble() * hourlyRate).setScale(2, RoundingMode.HALF_UP)
 

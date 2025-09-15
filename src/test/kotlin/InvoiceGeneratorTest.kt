@@ -29,27 +29,27 @@ class InvoiceGeneratorTest {
                 Project(
                     name = "Project 1",
                     description = "Description 1",
-                    rawHours = 10f,
+                    rawHours = 10.60f,
                 ),
                 Project(
                     name = "Project 2",
                     description = "Description 2",
-                    rawHours = 10f
+                    rawHours = 10.25f
                 ),
                 Project(
                     name = "Project 3",
                     description = "Description 3",
-                    rawHours = 10f
+                    rawHours = 10.5f
                 ),
                 Project(
                     name = "Project 4",
                     description = "Description 4",
-                    rawHours = 10f
+                    rawHours = 1.4f
                 ),
                 Project(
                     name = "Project 5",
                     description = "Description 5",
-                    rawHours = 10f
+                    rawHours = 0.05f
                 )
             )
         )
