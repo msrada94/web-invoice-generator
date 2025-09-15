@@ -54,7 +54,7 @@ class InvoiceGeneratorTest {
             )
         )
 
-        val result = InvoiceGenerator.generateInvoice(invoiceData)
+        InvoiceGenerator.generateInvoice(invoiceData)
     }
 
 }
