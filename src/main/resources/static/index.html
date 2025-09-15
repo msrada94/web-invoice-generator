@@ -14,12 +14,18 @@
     <script>
         function addProjectRow() {
             const table = document.getElementById("projectsTable");
-            const rowCount = table.rows.length - 1; // descontar header
+            const rowCount = table.rows.length - 1; // discount header
             const row = table.insertRow(-1);
             row.innerHTML = `
-                <td><input type="text" name="projects[${rowCount}].name" placeholder="AB1234"></td>
-                <td><input type="text" name="projects[${rowCount}].description" placeholder="Description"></td>
-                <td><input type="number" step="0.1" min="0" name="projects[${rowCount}].hours" placeholder="10.5"></td>
+                <td><input type="text" name="projects[${rowCount}].name" placeholder="AB1234" required
+                           oninvalid="this.setCustomValidity('Please enter the project code.')"
+                           oninput="this.setCustomValidity('')"></td>
+                <td><input type="text" name="projects[${rowCount}].description" placeholder="Description" required
+                           oninvalid="this.setCustomValidity('Please enter the project description.')"
+                           oninput="this.setCustomValidity('')"></td>
+                <td><input type="number" step="0.1" min="0" name="projects[${rowCount}].hours" placeholder="10.5" required
+                           oninvalid="this.setCustomValidity('Please enter the number of hours.')"
+                           oninput="this.setCustomValidity('')"></td>
             `;
         }
     </script>
@@ -33,15 +39,21 @@
             <td><h3>Bill To:</h3></td>
             <td>
                 <label for="contactName">Contact Name</label>
-                <input type="text" id="contactName" name="contactName" placeholder="Jhon Doe" required>
+                <input type="text" id="contactName" name="contactName" placeholder="Jhon Doe" required
+                       oninvalid="this.setCustomValidity('Please enter the contact name.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="clientCompany">Client Company</label>
-                <input type="text" id="clientCompany" name="clientCompany" placeholder="Acme Inc." required>
+                <input type="text" id="clientCompany" name="clientCompany" placeholder="Acme Inc." required
+                       oninvalid="this.setCustomValidity('Please enter the client company.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="address">Address</label>
-                <input type="text" id="address" name="address" placeholder="123 Main St" required>
+                <input type="text" id="address" name="address" placeholder="123 Main St" required
+                       oninvalid="this.setCustomValidity('Please enter the address.')"
+                       oninput="this.setCustomValidity('')">
             </td>
         </tr>
         <tr>
@@ -52,37 +64,51 @@
             </td>
             <td>
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="invoices@acme.com">
+                <input type="email" id="email" name="email" placeholder="invoices@acme.com"
+                       oninvalid="this.setCustomValidity('Please enter a valid email address.')"
+                       oninput="this.setCustomValidity('')">
             </td>
         </tr>
         <tr>
             <td><h3>Invoice info:</h3></td>
             <td>
                 <label for="invoiceNumber">Invoice Number</label>
-                <input type="number" step="1" min="1" id="invoiceNumber" name="invoiceNumber" placeholder="1" required>
+                <input type="number" step="1" min="1" id="invoiceNumber" name="invoiceNumber" placeholder="1" required
+                       oninvalid="this.setCustomValidity('Please enter the invoice number.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="invoiceDate">Invoice Date</label>
-                <input type="date" id="invoiceDate" name="invoiceDate" required>
+                <input type="date" id="invoiceDate" name="invoiceDate" required
+                       oninvalid="this.setCustomValidity('Please select the invoice date.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="dueDate">Due Date</label>
-                <input type="date" id="dueDate" name="dueDate" required>
+                <input type="date" id="dueDate" name="dueDate" required
+                       oninvalid="this.setCustomValidity('Please select the due date.')"
+                       oninput="this.setCustomValidity('')">
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
                 <label for="startDate">Start Date</label>
-                <input type="date" id="startDate" name="startDate" required>
+                <input type="date" id="startDate" name="startDate" required
+                       oninvalid="this.setCustomValidity('Please select the start date.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="endDate">End Date</label>
-                <input type="date" id="endDate" name="endDate" required>
+                <input type="date" id="endDate" name="endDate" required
+                       oninvalid="this.setCustomValidity('Please select the end date.')"
+                       oninput="this.setCustomValidity('')">
             </td>
             <td>
                 <label for="hourlyRate">Hourly Rate</label>
-                <input type="number" step="5" min="0" id="hourlyRate" name="hourlyRate" placeholder="45" required>
+                <input type="number" step="5" min="0" id="hourlyRate" name="hourlyRate" placeholder="45" required
+                       oninvalid="this.setCustomValidity('Please enter the hourly rate.')"
+                       oninput="this.setCustomValidity('')">
             </td>
         </tr>
     </table>
@@ -95,9 +121,15 @@
             <th>Hours</th>
         </tr>
         <tr>
-            <td><input type="text" name="projects[0].name" placeholder="AB1234" required></td>
-            <td><input type="text" name="projects[0].description" placeholder="Description" required></td>
-            <td><input type="number" step="0.1" min="0" name="projects[0].hours" placeholder="10.5" required></td>
+            <td><input type="text" name="projects[0].name" placeholder="AB1234" required
+                       oninvalid="this.setCustomValidity('Please enter the project code.')"
+                       oninput="this.setCustomValidity('')"></td>
+            <td><input type="text" name="projects[0].description" placeholder="Description" required
+                       oninvalid="this.setCustomValidity('Please enter the project description.')"
+                       oninput="this.setCustomValidity('')"></td>
+            <td><input type="number" step="0.1" min="0" name="projects[0].hours" placeholder="10.5" required
+                       oninvalid="this.setCustomValidity('Please enter the number of hours.')"
+                       oninput="this.setCustomValidity('')"></td>
         </tr>
     </table>
     <button type="button" onclick="addProjectRow()">Add Project</button><br><br>
