@@ -6,6 +6,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.ContentType.Text.Html
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.server.application.*
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
@@ -83,11 +84,12 @@ fun Application.configureRouting() {
                     projects.add(ProjectRecord(name, description, hours))
                     i++
                 }
+                val addressString = formatAddress(params)
 
                 val invoice = InvoiceSummaryData(
                     contactName = params["contactName"] ?: throw Exception("Contact name is required"),
                     clientCompany = params["clientCompany"] ?: throw Exception("Client company is required"),
-                    address = params["address"] ?: throw Exception("Address is required"),
+                    address = addressString,
                     phone = params["phone"] ?: throw Exception("Phone is required"),
                     email = params["email"] ?: throw Exception("Email is required"),
                     invoiceNumber = params["invoiceNumber"]?.toIntOrNull()
@@ -134,4 +136,20 @@ fun Application.configureRouting() {
             }
         }
     }
+}
+
+
+fun formatAddress(params: Parameters): String {
+    val addressLine1 = params["addressLine1"] ?: throw Exception("Address line 1 is required")
+    val town = params["town"] ?: throw Exception("Town is required")
+    val city = params["city"] ?: throw Exception("City is required")
+    val postcode = params["postcode"] ?: throw Exception("Postcode is required")
+
+    val lines = mutableListOf<String>()
+    lines.add("$addressLine1,")
+    lines.add("$town,")
+    lines.add(city)
+    lines.add(postcode)
+
+    return lines.joinToString("\n")
 }
