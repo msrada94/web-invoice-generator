@@ -49,10 +49,36 @@
                        oninvalid="this.setCustomValidity('Please enter the client company.')"
                        oninput="this.setCustomValidity('')">
             </td>
+        </tr>
+
+        <tr>
+            <td></td>
             <td>
-                <label for="address">Address</label>
-                <input type="text" id="address" name="address" placeholder="123 Main St" required
-                       oninvalid="this.setCustomValidity('Please enter the address.')"
+                <label for="addressLine1">Address Line 1</label>
+                <input type="text" id="addressLine1" name="addressLine1" placeholder="123 Main St" required
+                       oninvalid="this.setCustomValidity('Please enter Address Line 1.')"
+                       oninput="this.setCustomValidity('')">
+            </td>
+            <td>
+                <label for="addressLine2">Address Line 2 (Optional)</label>
+                <input type="text" id="addressLine2" name="addressLine2" placeholder="Apt 4B, Building Name">
+            </td>
+            <td>
+                <label for="town">Town</label>
+                <input type="text" id="town" name="town" placeholder="Northstowe" required
+                       oninvalid="this.setCustomValidity('Please enter the Town.')"
+                       oninput="this.setCustomValidity('')">
+            </td>
+            <td>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="Cambridge" required
+                       oninvalid="this.setCustomValidity('Please enter the City.')"
+                       oninput="this.setCustomValidity('')">
+            </td>
+            <td>
+                <label for="postcode">Postcode</label>
+                <input type="text" id="postcode" name="postcode" placeholder="CB9 1AF" required
+                       oninvalid="this.setCustomValidity('Please enter the Postcode.')"
                        oninput="this.setCustomValidity('')">
             </td>
         </tr>
@@ -68,6 +94,9 @@
                        oninvalid="this.setCustomValidity('Please enter a valid email address.')"
                        oninput="this.setCustomValidity('')">
             </td>
+        </tr>
+        <tr>
+            <td colspan="20"><hr></td>
         </tr>
         <tr>
             <td><h3>Invoice info:</h3></td>
@@ -111,8 +140,10 @@
                        oninput="this.setCustomValidity('')">
             </td>
         </tr>
+        <tr>
+            <td colspan="20"><hr></td>
+        </tr>
     </table>
-
     <h3>Projects</h3>
     <table border="1" id="projectsTable">
         <tr>
