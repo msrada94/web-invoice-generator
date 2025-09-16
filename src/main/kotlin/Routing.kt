@@ -139,7 +139,7 @@ fun Application.configureRouting() {
 }
 
 
-fun formatAddress(params: Parameters): String {
+private fun formatAddress(params: Parameters): String {
     val addressLine1 = params["addressLine1"] ?: throw Exception("Address line 1 is required")
     val town = params["town"] ?: throw Exception("Town is required")
     val city = params["city"] ?: throw Exception("City is required")

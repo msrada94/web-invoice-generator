@@ -169,7 +169,7 @@ object InvoiceGenerator {
         table.setBold().setTextAlignment(RIGHT)
 
         table.addCell(Cell())
-        table.addCell(Cell().add(Paragraph("Balance Due:")))
+        table.addCell(Cell().add(Paragraph("Balance due:")))
         table.addCell(Cell().add(Paragraph("£$totalDue")))
 
         table.children.forEach { (it as Cell).setBorder(NO_BORDER) }
@@ -203,8 +203,8 @@ object InvoiceGenerator {
 
     private fun getInvoiceInfoKeys(): String = "Invoice ID:\n" +
             "Date range:\n" +
-            "Invoice Date:\n" +
-            "Due Date:"
+            "Invoice date:\n" +
+            "Due date:"
 
     private fun getBillingInfo(billingInfo: BillingInfo): String = "${billingInfo.contactName}\n" +
             "${billingInfo.clientCompanyName}\n" +
