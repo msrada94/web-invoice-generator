@@ -146,10 +146,18 @@ private fun formatAddress(params: Parameters): String {
     val postcode = params["postcode"] ?: throw Exception("Postcode is required")
 
     val lines = mutableListOf<String>()
-    lines.add("$addressLine1,")
+    lines.add(splitAddress(addressLine1))
     lines.add("$town,")
     lines.add(city)
     lines.add(postcode)
 
     return lines.joinToString("\n")
+}
+
+fun splitAddress(input: String): String {
+    val parts = input.split(',').map { it.trim() }.filter { it.isNotBlank() }
+
+    val formattedParts = parts.map { if (it.endsWith(",")) it else "$it," }
+
+    return formattedParts.joinToString("\n")
 }
