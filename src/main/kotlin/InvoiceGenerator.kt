@@ -23,7 +23,7 @@ import java.math.BigDecimal
 object InvoiceGenerator {
 
     const val ALICE_INFO = "101 Heron Rd, Northstowe, " +
-            "Cambridge CB24 1AS\n alicefield91@gmail.com\n 07961533126\n\n"
+            "Cambridge CB24 1AS\n alicefield.freelance@gmail.com\n 07961533126\n\n"
 
     fun generateInvoiceByteArray(invoiceData: InvoiceData): ByteArray {
         val outputStream = ByteArrayOutputStream()
