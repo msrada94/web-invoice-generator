@@ -10,8 +10,54 @@
         table.form-table input { width: 180px; }
         #projectsTable input { width: 100%; }
         button { padding: 8px 16px; margin-top: 10px; }
+        .error-message { color: red; font-size: 12px; margin-top: 4px; }
     </style>
     <script>
+        const VALID_HOURS = [0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9];
+
+        function roundToValidDecimal(value) {
+            const tolerance = 0.0001;
+            const integerPart = Math.floor(value);
+            const decimalPart = value - integerPart;
+
+            // Si no hay parte decimal significativa
+            if (decimalPart < tolerance) {
+                return integerPart;
+            }
+
+            // Encontrar el primer valor >= decimalPart (con tolerancia)
+            const validDecimals = [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9];
+            const roundedDecimal = validDecimals.find(d => d >= decimalPart - tolerance);
+
+            if (roundedDecimal !== undefined) {
+                return integerPart + roundedDecimal;
+            } else {
+                // Si no hay válido, redondea al siguiente entero
+                return integerPart + 1;
+            }
+        }
+
+        function formatHours(value) {
+            return value.toFixed(2);
+        }
+
+        function validateHoursInput(input) {
+            const value = parseFloat(input.value);
+
+            if (isNaN(value)) {
+                return;
+            }
+
+            const rounded = roundToValidDecimal(value);
+            input.value = formatHours(rounded);
+
+            // Remover mensaje de error si existe
+            const errorMsg = input.parentElement.querySelector('.error-message');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
+        }
+
         function addProjectRow() {
             const table = document.getElementById("projectsTable");
             const rowCount = table.rows.length - 1; // discount header
@@ -23,17 +69,53 @@
                 <td><input type="text" name="projects[${rowCount}].description" placeholder="Description" required
                            oninvalid="this.setCustomValidity('Please enter the project description.')"
                            oninput="this.setCustomValidity('')"></td>
-                <td><input type="number" step="0.25" min="0" name="projects[${rowCount}].hours" placeholder="10.50" required
-                           oninvalid="this.setCustomValidity('Please enter the number of hours.')"
-                           oninput="this.setCustomValidity('')"></td>
+                <td>
+                    <input type="number" step="0.01" min="0" list="hourOptions"
+                           name="projects[${rowCount}].hours" placeholder="10.50" required
+                           oninvalid="this.setCustomValidity('Please enter valid hours.')"
+                           oninput="this.setCustomValidity(''); validateHoursInput(this)"
+                           onchange="validateHoursInput(this)">
+                    <div class="valid-values">Valid: 0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9</div>
+                </td>
             `;
+        }
+
+        function validateForm() {
+            const inputs = document.querySelectorAll('input[name*=".hours"]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    const rounded = roundToValidDecimal(value);
+                    input.value = formatHours(rounded);
+                }
+            });
+
+            return isValid;
         }
     </script>
 </head>
 <body>
 <h1>Alice Invoice Generator</h1>
 
-<form action="/submit" method="post">
+<form action="/submit" method="post" onsubmit="return validateForm()">
+    <!-- Datalist con opciones de horas -->
+    <datalist id="hourOptions">
+        <option value="0"></option>
+        <option value="0.1"></option>
+        <option value="0.2"></option>
+        <option value="0.25"></option>
+        <option value="0.3"></option>
+        <option value="0.4"></option>
+        <option value="0.5"></option>
+        <option value="0.6"></option>
+        <option value="0.7"></option>
+        <option value="0.75"></option>
+        <option value="0.8"></option>
+        <option value="0.9"></option>
+    </datalist>
+
     <table class="form-table">
         <tr>
             <td><h3>Bill To:</h3></td>
@@ -154,9 +236,15 @@
             <td><input type="text" name="projects[0].description" placeholder="Description" required
                        oninvalid="this.setCustomValidity('Please enter the project description.')"
                        oninput="this.setCustomValidity('')"></td>
-            <td><input type="number" step="0.25" min="0" name="projects[0].hours" placeholder="10.50" required
-                       oninvalid="this.setCustomValidity('Please enter the number of hours.')"
-                       oninput="this.setCustomValidity('')"></td>
+            <td>
+                <input type="number" step="0.01" min="0" list="hourOptions" name="projects[0].hours" placeholder="10.50" required
+                       oninvalid="this.setCustomValidity('Please enter valid hours.')"
+                       oninput="this.setCustomValidity(''); validateHoursInput(this)"
+                       onchange="validateHoursInput(this)">
+                <div class="valid-values" style="font-size: 11px; color: #666; margin-top: 4px;">
+                    Valid: 0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9
+                </div>
+            </td>
         </tr>
     </table>
     <button type="button" onclick="addProjectRow()">Add Project</button><br><br>

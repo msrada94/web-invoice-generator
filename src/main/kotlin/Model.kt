@@ -5,7 +5,6 @@ import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale.ENGLISH
-import kotlin.math.ceil
 
 data class Project(
     val name: String,
@@ -13,7 +12,28 @@ data class Project(
     private val rawHours: Float,
     private val hourlyRate: Int = 45
 ) {
-    private val roundedHours: Float = (ceil(rawHours * 4) / 4.0).toFloat()
+    private val validDecimals = listOf(0.1f, 0.2f, 0.25f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.75f, 0.8f, 0.9f)
+
+    private fun roundToValidDecimal(value: Float): Float {
+        val tolerance = 0.0001f
+        val integerPart = value.toInt()
+        val decimalPart = value - integerPart
+
+        if (decimalPart < tolerance) {
+            return integerPart.toFloat()
+        }
+
+        // Encontrar el primer valor >= decimalPart
+        val roundedDecimal = validDecimals.firstOrNull { it >= decimalPart - tolerance }
+        return if (roundedDecimal != null) {
+            integerPart + roundedDecimal
+        } else {
+            // Si no hay válido (ej: 0.95), redondea al siguiente entero
+            (integerPart + 1).toFloat()
+        }
+    }
+
+    private val roundedHours: Float = roundToValidDecimal(rawHours)
 
     val hours: String = String.format("%.2f", roundedHours)
     val total: BigDecimal
@@ -41,7 +61,7 @@ data class InvoiceInfo(
     private val dueDate: LocalDate,
     private val startDate: LocalDate,
     private val endDate: LocalDate
-){
+) {
     private val formatter = DateTimeFormatter.ofPattern("dd-MMM-yy", ENGLISH)
 
     init {
